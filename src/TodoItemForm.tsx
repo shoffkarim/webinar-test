@@ -75,12 +75,13 @@ export default function TodoItemForm() {
                 handleChange(e);
               }}
             >
-              {tags.map((tag) => (
-                tag.id !== "0" ?
-                (<MenuItem value={tag.id} key={tag.id}>
-                  {tag.name}
-                </MenuItem>) : null
-              ))}
+              {tags.map((tag) =>
+                tag.id !== "0" ? (
+                  <MenuItem value={tag.id} key={tag.id}>
+                    {tag.name}
+                  </MenuItem>
+                ) : null
+              )}
             </Select>
           )}
         />

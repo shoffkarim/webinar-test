@@ -117,7 +117,7 @@ export const TodoItemCard = memo(function ({ item }: { item: TodoItem }) {
               todoItem: Object.assign(formData, {
                 title: title,
                 details: details,
-                tag: item.tag
+                tag: item.tag,
               }),
             },
           });
@@ -206,7 +206,9 @@ export const TodoItemCard = memo(function ({ item }: { item: TodoItem }) {
         ) : null}
         {edit && (
           <CardContent>
-            <Button variant="contained" color="primary" type="submit">submit</Button>
+            <Button variant="contained" color="primary" type="submit">
+              submit
+            </Button>
           </CardContent>
         )}
       </form>

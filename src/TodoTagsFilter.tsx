@@ -8,7 +8,6 @@ import {
 import { useState } from "react";
 import { ITodoTagsFilter, tags } from "./TodoItemsContext";
 
-
 const useTodoItemListStyles = makeStyles({
   formControl: {
     minWidth: 120,
@@ -25,7 +24,6 @@ export const TodoTagsFilter: React.FC<ITodoTagsFilter> = function ({
     setTagName(event.target.value as string);
     handleFilter(event.target.value as string);
   };
-
 
   const classes = useTodoItemListStyles();
   return (
