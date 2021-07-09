@@ -30,7 +30,6 @@ const useTodoItemListStyles = makeStyles({
 export const TodoItemsList = function () {
   const { dispatch } = useTodoItems();
   const { todoItems, filter } = useTodoItems();
-  console.log(todoItems);
   const classes = useTodoItemListStyles();
 
   const TodoHandleFilter = useCallback(

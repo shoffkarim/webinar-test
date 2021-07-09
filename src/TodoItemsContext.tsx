@@ -127,9 +127,6 @@ function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
                 ],
             };
         case 'filterTag':
-            console.log(action.data)
-            console.log(state.todoItems.findIndex(({ tag }) => tag === action.data.tag))
-            console.log(state.todoItems.filter(({ tag }) => tag === action.data.tag))
             return{
                 ...state,
                 filter: action.data.tag,
