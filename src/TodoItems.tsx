@@ -132,7 +132,7 @@ export const TodoItemCard = function ({ item }: { item: TodoItem }) {
           <Typography variant="body2" component="p">
             {"Tags: "}
             {tags.map((tagItem) =>
-              tagItem.id === item.tag ? <span>{tagItem.name}</span> : null
+              tagItem.id === item.tag ? <span key={tagItem.id}>{tagItem.name}</span> : null
             )}
           </Typography>
         </CardContent>
