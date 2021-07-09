@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -12,6 +12,8 @@ import classnames from "classnames";
 import { motion } from "framer-motion";
 import { tags, TodoItem, useTodoItems } from "./TodoItemsContext";
 import { TodoTagsFilter } from "./TodoTagsFilter";
+import { Button, TextField } from "@material-ui/core";
+import { Controller, useForm } from "react-hook-form";
 
 const spring = {
   type: "spring",
@@ -76,14 +78,19 @@ const useTodoItemCardStyles = makeStyles({
   },
 });
 
-export const TodoItemCard = function ({ item }: { item: TodoItem }) {
+export const TodoItemCard = memo(function ({ item }: { item: TodoItem }) {
   const classes = useTodoItemCardStyles();
   const { dispatch } = useTodoItems();
+  const [edit, setEdit] = useState(false);
+  const [details, setDetails] = useState(item.details);
+  const [title, setTitle] = useState(item.title);
 
   const handleDelete = useCallback(
     () => dispatch({ type: "delete", data: { id: item.id } }),
     [item.id, dispatch]
   );
+
+  const { control, handleSubmit } = useForm();
 
   const handleToggleDone = useCallback(
     () =>
@@ -93,50 +100,116 @@ export const TodoItemCard = function ({ item }: { item: TodoItem }) {
       }),
     [item.id, dispatch]
   );
-
+  const handleEdit = () => {
+    setEdit(!edit);
+  };
   return (
     <Card
       className={classnames(classes.root, {
         [classes.doneRoot]: item.done,
       })}
     >
-      <CardHeader
-        action={
-          <IconButton aria-label="delete" onClick={handleDelete}>
-            <DeleteIcon />
-          </IconButton>
-        }
-        title={
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={item.done}
-                onChange={handleToggleDone}
-                name={`checked-${item.id}`}
-                color="primary"
+      <form
+        onSubmit={handleSubmit((formData) => {
+          dispatch({
+            type: "add",
+            data: {
+              todoItem: Object.assign(formData, {
+                title: title,
+                details: details,
+                tag: item.tag
+              }),
+            },
+          });
+          handleDelete();
+        })}
+      >
+        <CardHeader
+          action={
+            <>
+              {!edit && <Button onClick={handleEdit}>edit</Button>}
+              <IconButton aria-label="delete" onClick={handleDelete}>
+                <DeleteIcon />
+              </IconButton>
+            </>
+          }
+          title={
+            !edit ? (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={item.done}
+                    onChange={handleToggleDone}
+                    name={`checked-${item.id}`}
+                    color="primary"
+                  />
+                }
+                label={item.title}
               />
-            }
-            label={item.title}
-          />
-        }
-      />
-      {item.details ? (
-        <CardContent>
-          <Typography variant="body2" component="p">
-            {item.details}
-          </Typography>
-        </CardContent>
-      ) : null}
-      {item.tag ? (
-        <CardContent>
-          <Typography variant="body2" component="p">
-            {"Tags: "}
-            {tags.map((tagItem) =>
-              tagItem.id === item.tag ? <span key={tagItem.id}>{tagItem.name}</span> : null
+            ) : (
+              <>
+                <Controller
+                  name="title"
+                  control={control}
+                  defaultValue={details ? details : null}
+                  render={({ field: { onChange, value } }) => (
+                    <TextField
+                      fullWidth={true}
+                      multiline={true}
+                      className={classes.root}
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  )}
+                />
+              </>
+            )
+          }
+        />
+        {item.details ? (
+          <CardContent>
+            {!edit ? (
+              <Typography variant="body2" component="p">
+                {details}
+              </Typography>
+            ) : (
+              <>
+                <Controller
+                  name="details"
+                  control={control}
+                  defaultValue={details ? details : null}
+                  render={({ field: { onChange, value } }) => (
+                    <TextField
+                      fullWidth={true}
+                      multiline={true}
+                      className={classes.root}
+                      value={details}
+                      onChange={(e) => setDetails(e.target.value)}
+                    />
+                  )}
+                />
+              </>
             )}
-          </Typography>
-        </CardContent>
-      ) : null}
+          </CardContent>
+        ) : null}
+        {item.tag ? (
+          <CardContent>
+            <Typography variant="body2" component="p">
+              {"Tags: "}
+              {tags.map((tagItem) =>
+                tagItem.id === item.tag ? (
+                  <span key={tagItem.id}>{tagItem.name}</span>
+                ) : null
+              )}
+            </Typography>
+          </CardContent>
+        ) : null}
+        {edit && (
+          <CardContent>
+            <Button variant="contained" color="primary" type="submit">submit</Button>
+          </CardContent>
+        )}
+      </form>
     </Card>
   );
-};
+});
