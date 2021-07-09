@@ -10,15 +10,38 @@ export interface TodoItem {
     id: string;
     title: string;
     details?: string;
+    tag: string;
     done: boolean;
 }
 
+export const tags = [
+    {
+      id: "0",
+      name: "All",
+    },
+    {
+      id: "1",
+      name: "Home",
+    },
+    {
+      id: "2",
+      name: "Job",
+    },
+    {
+      id: "3",
+      name: "Scholl",
+    },
+  ];
+export interface ITodoTagsFilter {
+   handleFilter: (arg0: string) => void;
+}
 interface TodoItemsState {
     todoItems: TodoItem[];
+    filter: string;
 }
 
 interface TodoItemsAction {
-    type: 'loadState' | 'add' | 'delete' | 'toggleDone';
+    type: 'loadState' | 'add' | 'delete' | 'toggleDone' | 'filterTag';
     data: any;
 }
 
@@ -103,6 +126,14 @@ function todoItemsReducer(state: TodoItemsState, action: TodoItemsAction) {
                     ...state.todoItems.slice(itemIndex + 1),
                 ],
             };
+        case 'filterTag':
+            console.log(action.data)
+            console.log(state.todoItems.findIndex(({ tag }) => tag === action.data.tag))
+            console.log(state.todoItems.filter(({ tag }) => tag === action.data.tag))
+            return{
+                ...state,
+                filter: action.data.tag,
+            }
         default:
             throw new Error();
     }
