@@ -49,7 +49,7 @@ const TodoItemsContext = createContext<
     (TodoItemsState & { dispatch: (action: TodoItemsAction) => void }) | null
 >(null)
 
-const defaultState = { todoItems: [] }
+const defaultState = { todoItems: [], filter: '0' }
 const localStorageKey = 'todoListState'
 
 export const TodoItemsContextProvider = ({
